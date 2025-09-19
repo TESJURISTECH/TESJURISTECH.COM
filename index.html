@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TESJURISTECH — IT & Legal Consulting</title>
+  <style>
+    :root{
+      --blue:#0b66ff;--dark:#04204a;--muted:#f4f7fb;--glass: rgba(255,255,255,0.85);
+      --card-shadow: 0 10px 25px rgba(4,32,74,0.12);
+      --radius:14px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;color:#0b2540;background:linear-gradient(180deg,#fbfdff 0%, #f4f9ff 100%);}
+    a{color:inherit;text-decoration:none}
+
+    /* HEADER */
+    .topbar{display:flex;align-items:center;gap:14px;padding:8px 20px;background:linear-gradient(90deg,var(--glass), rgba(255,255,255,0.6));backdrop-filter: blur(6px);position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(6,30,80,0.04)}
+    .logo-wrap{display:flex;align-items:center;gap:12px}
+    .logo-svg{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--blue),#2aa0ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:var(--card-shadow)}
+    .company-name{line-height:1}
+    .company-name h1{font-size:18px;margin:0;color:var(--dark);font-weight:700}
+    .company-name p{margin:0;font-size:13px;color:#355070}
+
+    /* NAV */
+    nav{margin-left:auto}
+    .nav-list{display:flex;gap:16px;align-items:center}
+    .nav-list a{padding:10px 14px;border-radius:10px;font-weight:600;color:#06304d}
+    .nav-list a:hover{background:rgba(11,102,255,0.08)}
+
+    /* HERO / SLIDER */
+    .hero{height:calc(100vh - 110px);min-height:420px;position:relative;overflow:hidden}
+    .slides{display:flex;height:100%;transition:transform 0.7s cubic-bezier(.2,.9,.2,1)}
+    .slide{min-width:100%;display:grid;place-items:center;position:relative;padding:30px}
+    .slide-inner{max-width:1100px;width:100%;display:flex;gap:24px;align-items:center}
+    .slide .content{flex:1}
+    .slide .content h2{font-size:36px;margin:0 0 12px;color:#062a4a}
+    .slide .content p{margin:0 0 18px;color:#274a68}
+    .slide .media{flex:1;display:flex;justify-content:center}
+    .slide-card{width:100%;max-width:520px;border-radius:16px;padding:18px;background:white;box-shadow:var(--card-shadow)}
+
+    .slider-controls{position:absolute;left:16px;right:16px;bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .dots{display:flex;gap:8px}
+    .dot{width:12px;height:12px;border-radius:50%;background:rgba(4,20,40,0.12);cursor:pointer}
+    .dot.active{background:var(--blue)}
+    .arrow{background:white;padding:10px;border-radius:10px;box-shadow:var(--card-shadow);cursor:pointer}
+
+    /* PAGE CONTENT */
+    .container{max-width:1200px;margin:30px auto;padding:0 18px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+    /* ABOUT SECTION */
+    .about .text-3d{background:linear-gradient(180deg,#ffffff,#f7fbff);padding:28px;border-radius:18px;box-shadow: 0 18px 40px rgba(4,32,74,0.08);transform:skewX(-2deg);  text-align: justify;}
+    .about .text-3d > div{transform:skewX(2deg)}
+    .about .img-box{border-radius:18px;overflow:hidden;box-shadow:var(--card-shadow)}
+    .about img{display:block;width:100%;height:100%;object-fit:cover}
+
+    /* SERVICES */
+    .services{margin-top:24px}
+    .service-tabs{display:flex;gap:12px}
+    .service-card{flex:1;background:white;border-radius:16px;padding:28px;position:relative;cursor:pointer;box-shadow:var(--card-shadow);transition:transform .18s ease, box-shadow .18s ease}
+    .service-card:hover{transform:translateY(-8px)}
+    .service-overlay{position:absolute;inset:0;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center;font-size:20px;color:white;font-weight:800}
+    .service-it{background:linear-gradient(135deg,var(--blue),#2aa0ff)}
+    .service-legal{background:linear-gradient(135deg,#1b6bc9,#5b7fd6)}
+
+    .services-list{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+    .service-item{min-width:220px;background:linear-gradient(180deg,#ffffff,#f6f9ff);padding:16px;border-radius:12px;box-shadow:0 8px 20px rgba(4,32,74,0.06);cursor:pointer;transition:transform .15s}
+    .service-item:hover{transform:translateY(-6px)}
+
+    /* MODAL */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,12,30,0.45);z-index:60}
+    .modal.show{display:flex}
+    .modal-card{background:white;border-radius:14px;padding:22px;max-width:720px;width:92%;box-shadow:0 40px 90px rgba(2,20,60,0.3)}
+    .modal-card h3{margin:0 0 12px}
+    .modal-close{position:absolute;right:12px;top:8px;padding:6px 8px;border-radius:8px;cursor:pointer}
+
+  /*R&D Flipcard */
+.rnd {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.flip-card {
+  width: 100%;
+  height: 320px; /* 🔹 fixed equal height */
+  perspective: 1200px;
+  position: relative;
+}
+
+/* changed flip code */
+.flip-inner {
+  transition: transform 0.6s;
+}
+
+.flip-card.show-back .flip-front { display: none; }
+.flip-card.show-back .flip-back { display: flex; }
+
+.flip-front, .flip-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.flip-back { display: none; background: linear-gradient(180deg,#eef7ff,#e2f0ff); }
+.flip-front { background: #fff; }
+
+.card-img {
+  width: 100%;
+  height: 180px; 
+  object-fit: cover;
+}
+
+.flip-front h3,
+.flip-back h3 {
+  margin: 12px 0;
+  font-size: 1.2rem;
+  color: #04204a;
+}
+
+
+    /* CONTACT */
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+    .contact-card{background:white;padding:18px;border-radius:12px;box-shadow:var(--card-shadow)}
+    .muted{color:#3a5773;font-size:14px}
+
+    /* FOOTER */
+    footer{padding:18px;text-align:center;color:#284a6a;margin-top:28px}
+
+    /* responsive */
+    @media (max-width:900px){
+      .two-col{grid-template-columns:1fr}
+      .nav-list{display:none}
+      .logo-svg{width:56px;height:56px}
+      .slide .content h2{font-size:28px}
+      .hero{min-height:520px}
+      .rnd{flex-direction:column}
+      .contact-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:480px){
+      .company-name h1{font-size:15px}
+      .company-name p{font-size:12px}
+      .slide .content p{font-size:14px}
+    }
+    /* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 38px;
+  height: 32px;
+  padding: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.hamburger:hover { background: rgba(11,102,255,0.08); }
+.hamburger span {
+  height: 3px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--dark);
+  transition: all 0.4s ease;
+}
+
+/* transform to X */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Mobile nav panel */
+.nav-mobile {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 72px;
+  right: 0;
+  width: 240px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--card-shadow);
+  border-radius: 14px 0 0 14px;
+  padding: 20px;
+  gap: 12px;
+  animation: slideIn 0.35s ease forwards;
+}
+.nav-mobile a {
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--dark);
+}
+.nav-mobile a:hover {
+  background: rgba(11,102,255,0.08);
+}
+@keyframes slideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@media (max-width:900px){
+  .hamburger{display:flex}
+}
+/* logo */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between image and text */
+}
+.company-name h1 {
+  font-size: 16px;
+}
+
+.company-name p {
+  font-size: 12px;
+}
+.logo-img {
+  width: 30px;      /* adjust size */
+  height: 30px;     /* square logo */
+  object-fit: cover; /* makes it cleanly fit */
+  border-radius: 50%; /* 🔹 optional: circular logo */
+}
+/* Company Name align */
+.company-name{text-align:center;font-family:Arial,sans-serif;margin:20px 0}
+
+/*whatsapp */
+.whatsapp-chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: Arial, sans-serif;
+}
+.whatsapp-icon {
+  width: 60px;
+  height: 60px;
+  background: #25D366;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.whatsapp-icon img {
+  width: 32px;
+  height: 32px;
+}
+.whatsapp-icon:hover {
+  transform: scale(1.1);
+}
+.whatsapp-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  display: none;
+  width: 200px;
+  text-align: center;
+}
+.whatsapp-box p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #062a4a;
+}
+.whatsapp-box a {
+  display: inline-block;
+  text-decoration: none;
+  background: #25D366;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+.whatsapp-box a:hover {
+  background: #1ebe57;
+}
+/* Desktop nav */
+.nav-list {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.nav-list a {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #06304d;
+  transition: background 0.2s;
+}
+
+.nav-list a:hover {
+  background: rgba(11,102,255,0.08);
+}
+
+/* Hide desktop nav on mobile */
+@media (max-width:900px) {
+  .nav-list { display: none; }
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* added */
+  gap: 18px;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, var(--glass), rgba(255,255,255,0.6));
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(6,30,80,0.04);
+    max-width: 1200px; /* adjust width */
+  margin: 0 auto;
+}
+  :root {
+      --blue:#0b66ff;
+      --dark:#04204a;
+      --muted:#f4f7fb;
+      --glass:rgba(255,255,255,0.75);
+      --card-shadow:0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    body {
+      margin:0;
+      font-family:Segoe UI, sans-serif;
+      background:var(--muted);
+      color:var(--dark);
+      line-height:1.6;
+    }
+
+    .container {
+      width:90%;
+      max-width:1100px;
+      margin:auto;
+      padding:40px 0;
+    }
+
+    h2 {
+      font-size:28px;
+      margin-bottom:16px;
+      color:var(--dark);
+      text-align:center;
+    }
+
+    .about {
+      background:var(--glass);
+      padding:30px;
+      border-radius:16px;
+      box-shadow:var(--card-shadow);
+      margin-bottom:40px;
+    }
+    .about p {
+      font-size:16px;
+      color:#234a6a;
+      margin:10px 0;
+      text-align:justify;
+    }
+
+    /* Vision & Mission */
+    .vision-mission {
+      margin-top:40px;
+    }
+    .vision-mission h2 {
+      font-size:26px;
+      margin-bottom:24px;
+    }
+    .vm-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+    .vm-card {
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      border-radius:16px;
+      padding:26px;
+      box-shadow:var(--card-shadow);
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+      text-align:left;
+    }
+    .vm-card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 14px 30px rgba(4,32,74,0.15);
+    }
+    .vm-card h3 {
+      margin-top:0;
+      font-size:20px;
+      color:var(--blue);
+    }
+    .vm-card p {
+      margin-top:10px;
+      color:#2c4a68;
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    /* Responsive */
+    @media(max-width:800px) {
+      .vm-grid { grid-template-columns:1fr; }
+      .vm-card { text-align:center; }
+    }
+.vm-card ul {
+  margin: 12px 0 0 18px;
+  padding: 0;
+  color: #2c4a68;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.vm-card ul li {
+  margin-bottom: 8px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- header -->
+  <header class="topbar">
+  <div class="logo-wrap">
+    <!-- Logo Image -->
+    <img src="logo.png" alt="TESJURISTECH logo" class="logo-img">
+
+    <!-- Company Name -->
+          <div class="company-name">
+            <h1>TESJURISTECH</h1>
+            <p>IT • Legal Consulting — India</p>
+          </div>
+    </div>
+    <nav>
+  <!-- Desktop nav -->
+  <div class="nav-list">
+    <a href="#about">About Us</a>
+    <a href="#services">Services</a>
+    <a href="#rnd">R&D</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <!-- Mobile hamburger -->
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="#about">About Us</a>
+    <a href="#services">Services</a>
+    <a href="#rnd">R&D</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+  </header>
+
+  <!-- hero/slider -->
+  <section class="hero">
+    <div class="slides" id="slides">
+      <div class="slide" style="background:linear-gradient(120deg,#f8fbff,#eaf6ff);">
+        <div class="slide-inner">
+          <div class="content">
+            <h2>Technology solutions that power business growth</h2>
+            <p>Static & dynamic websites, Cybersecurity, Enterprise software and cloud strategy — tailored for Indian enterprises.</p>
+            <div class="slide-card">
+              <strong>Core Offerings</strong>
+              <ul style="margin:8px 0 0;padding-left:18px;color:#274a68">
+                <li>Web & Mobile Applications</li>
+                <li>Cybersecurity Assessments</li>
+                <li>Cloud Migration & Support</li>
+              </ul>
+            </div>
+          </div>
+          <div class="media">
+            <div class="slide-card">
+              <!-- simple svg placeholder -->
+              <img src="aboutus.png" alt="IT Services" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0" stop-color="#0b66ff" />
+                    <stop offset="1" stop-color="#2aa0ff" />
+                  </linearGradient>
+                </defs>
+                <rect rx="12" width="600" height="220" fill="url(#g1)" />
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="30" fill="white">IT Services</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" style="background:linear-gradient(120deg,#fff9f8,#eef7ff);">
+        <div class="slide-inner">
+          <div class="content">
+            <h2>Legal expertise with technology-friendly approach</h2>
+            <p>Advisory on corporate law, family matters, loan agreements and regulatory compliance — plus tech-friendly document automation.</p>
+            <div class="slide-card">
+              <strong>Legal Focus</strong>
+              <ul style="margin:8px 0 0;padding-left:18px;color:#274a68">
+                <li>Corporate & Contract Law</li>
+                <li>Family & Property</li>
+                <li>Regulatory Compliance</li>
+              </ul>
+            </div>
+          </div>
+          <div class="media">
+            <div class="slide-card">
+              <img src="aboutus.png" alt="IT Services" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">
+                <rect rx="12" width="600" height="220" fill="linearGradient(#1b6bc9, #5b7fd6)" />
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="30" fill="#062a4a">Legal Services</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" style="background:linear-gradient(120deg,#f3fbff,#eefbff);">
+        <div class="slide-inner">
+          <div class="content">
+            <h2>Research &amp; Expert sessions</h2>
+            <p>Workshops, expert panels and collaborative R&amp;D focused on fintech, compliance tech and legaltech prototyping.</p>
+            <div class="slide-card">
+              <strong>R&amp;D</strong>
+              <p style="margin:8px 0 0;color:#274a68">Proof-of-concepts, pilots and expert mentoring for startups and enterprises.</p>
+            </div>
+          </div>
+          <div class="media">
+            <div class="slide-card">
+              <img src="aboutus.png" alt="IT Services" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">
+                <rect rx="12" width="600" height="220" fill="#e6f4ff" />
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#0b66ff">R&amp;D & Workshops</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-controls">
+      <div class="arrow" id="prev">◀</div>
+      <div class="dots" id="dots"></div>
+      <div class="arrow" id="next">▶</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+   <!-- ABOUT US -->
+  <main class="container">
+    <section id="about" class="about">
+      <h2>About Us</h2>
+      <p>
+        Founded in 2012 as a virtual-first enterprise, <b>TESJURISTECH – IT and Legal Consultancy </b> headquarters in Udupi and a workspace near Infopark, Ernakulam, has evolved into a globally recognized knowledge and solutions partner, driven by a multidisciplinary team of 127+ domain experts across digital transformation, emerging technologies, legal advisory, and strategic business consulting.
+      </p>
+      <p>
+        In IT consultancy, we deliver enterprise modernization, data-driven strategies, cloud-native solutions, cybersecurity, automation, and integration of emerging technologies like AI and blockchain—enabling organizations to scale, innovate, and stay secure.</p>
+       <p>In legal services, we handle Motor Accident and Railway Claims, Property and Construction disputes, Family Law matters, Service and Labour issues, Civil and Corporate litigation, Legal Documentation, Property Registration, Arbitration, and Mediation—ensuring rights are protected and disputes resolved effectively.</p>
+      <!-- VISION & MISSION -->
+      <section id="vision-mission" class="vision-mission">
+        <h2>Our Vision & Mission</h2>
+        <div class="vm-grid">
+          <div class="vm-card">
+            <h3>🌍 Vision</h3>
+            <p>
+              To be a globally recognized IT and legal consultancy that empowers businesses and individuals with innovative technology solutions and reliable legal expertise, fostering trust, compliance, and sustainable growth.
+            </p>
+          </div>
+          <div class="vm-card">
+  <h3>🎯 Mission</h3>
+  <ul>
+    <li>Bridge the gap between technology and law with integrated consultancy tailored to client needs.</li>
+    <li>Deliver innovative, secure, and cost-effective IT solutions that drive digital transformation.</li>
+    <li>Provide expert legal advisory to ensure compliance, protect rights, and minimize risks.</li>
+  </ul>
+</div>
+
+        </div>
+      </section>
+    </section>
+  </main>
+
+   
+
+    <!-- SERVICES -->
+    <section id="services" class="services">
+      <h2>Services</h2>
+      <div class="service-tabs">
+        <div class="service-card" id="open-it">
+          <div class="service-overlay service-it">IT</div>
+          <p style="margin-top:60px;font-weight:700">Information Technology</p>
+          <p class="muted">Web, apps, security, cloud &amp; DevOps</p>
+        </div>
+
+        <div class="service-card" id="open-legal">
+          <div class="service-overlay service-legal">LEGAL</div>
+          <p style="margin-top:60px;font-weight:700">Legal Advisory</p>
+          <p class="muted">Corporate, Family, Loans, Documentation</p>
+        </div>
+      </div>
+<!--
+      <div class="services-list" aria-hidden="true">
+        <div class="service-item">Web & Mobile Application Development</div>
+        <div class="service-item">UI/UX Consulting</div>
+        <div class="service-item">Custom ERP & CRM Solutions</div>
+        <div class="service-item">Arbitration and Mediation</div>
+        
+      </div> -->
+
+    </section>
+
+    <!-- MODALS -->
+    <div class="modal" id="modal-it" aria-hidden="true">
+      <div class="modal-card">
+        <button class="modal-close" data-close>✕</button>
+        <h3>IT Services</h3>
+        <p class="muted"></p>
+        <ul style="margin-top:12px">  
+          <li>Custom ERP & CRM Solutions</li>
+          <li>Cloud Consulting & Migration</li>
+          <li>IT Support & Helpdesk Solutions</li>
+          <li>Information Security Audits</li>
+          <li>Robotic Process Automation (RPA)</li>
+          <li>UI/UX Consulting</li>
+          <li>Web & Mobile Application Development</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal" id="modal-legal" aria-hidden="true">
+      <div class="modal-card">
+        <button class="modal-close" data-close>✕</button>
+        <h3>Legal Services</h3>
+        <p class="muted"></p>
+        <ul style="margin-top:12px">
+          <li>Arbitration and Mediation</li>
+          <li>Civil Law Cases and Corporate Litigation</li>
+          <li>Family Law Cases</li>
+          <li>Motor Accidents and Railway Claims Tribunal Cases</li>
+          <li>Regulatory compliance & drafting</li>
+          <li>Registration and Filing</li>
+          <li>Incorporation Solutions</li>
+          <li>Service and Labour Law Cases</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- R&D -->
+    <section id="rnd">
+  <h2>Research &amp; Development</h2>
+  <div class="rnd">
+    <!-- IT Card -->
+    <div class="flip-card" data-role="it">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <h3>IT  - Research&amp;Development</h3>
+          <p class="muted">Our Team research on these area</p>
+        </div>
+        <div class="flip-face flip-back">
+          <h3>Research Area</h3>
+          <p class="muted"></p>
+          <li>
+          AI / Machine Learning & Automation
+          </li>
+          <li>Cybersecurity & Privacy Research</li>
+          <li>User Interfaces & Accessibility</li>
+          <li>Cloud, Edge, & Scalability</li>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legal Card -->
+    <div class="flip-card" data-role="legal">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <h3>Legal Research&amp;Development</h3>
+          <p class="muted">Legaltech pilots, document automation & policy research.</p>
+        </div>
+        <div class="flip-face flip-back">
+          <h3>Legal </h3>
+          <p class="muted">Panels on compliance, family law clinics & loan mediation.</p>
+          <li>LawTech / LegalTech Tools</li>
+          <li>Legal Process Innovation & Service Models</li>
+          <li>Regulatory, Policy & Compliance Studies</li>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW Business Card -->
+    <div class="flip-card" data-role="biz">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <h3>Expert Session</h3>
+          <p class="muted">Legal Session,Information Technology &amp; Career Guidance.</p>
+        </div>
+        <div class="flip-face flip-back">
+          <h3>IT &amp;Legal Workshops</h3>
+          <p class="muted"></p>
+          <ul>
+      <li><i class="fas fa-lightbulb"></i> Technology Career Paths & Opportunities</li>
+      <li><i class="fas fa-briefcase"></i> Legal Career Guidance & Specializations</li>
+      <li><i class="fas fa-chart-line"></i> Skill Development & Certification Tips</li>
+      <li><i class="fas fa-hand-holding-usd"></i> Internship & Job Preparation Advice</li>
+    </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="margin-top:22px">
+      <h2>Contact Us</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h4>Corporate</h4>
+          <p class="muted">Office hours: Mon - Fri, 08:30 AM to 5:30 PM</p>
+          <p style="margin-top:8px">Phone: <a href="tel:+919747590187">+91 9747590187</a></p>
+          <p>Email: <a href="mailto:tesjuristech@gmail.com">tesjuristech@gmail.com</a></p>
+        </div>
+        <div class="contact-card">
+          <h4>Workspace &amp; Meetings</h4>
+          <p class="muted">Available for client meetings by appointment</p>
+          <p style="margin-top:8px">Phone: <a href="tel:+919747590187">+91 9747590187</a></p>
+          <p>Email: <a href="mailto:tesjuristech@gmail.com">tesjuristech@gmail.com</a></p>
+        </div>
+      </div>
+    </section>
+
+<!-- WhatsApp Floating Chat -->
+<div class="whatsapp-chat" id="whatsapp-chat">
+  <div class="whatsapp-icon" id="whatsapp-toggle">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+  </div>
+  <div class="whatsapp-box" id="whatsapp-box">
+    <p>Hi! How can we help you?</p>
+    <a href="https://wa.me/919972264755" target="_blank">Chat on WhatsApp</a>
+  </div>
+</div>
+
+    <footer>
+      &copy; <span id="year"></span> TESJURISTECH - IT & Legal Consulting — All rights reserved.
+    </footer>
+  </main>
+
+  <script>
+    // Slider
+    const slidesEl = document.getElementById('slides');
+    const slides = slidesEl.children; let idx = 0;
+    const dotsEl = document.getElementById('dots');
+    for(let i=0;i<slides.length;i++){const d=document.createElement('div');d.className='dot';d.addEventListener('click',()=>go(i));dotsEl.appendChild(d);} 
+    const dots = dotsEl.children; function render(){slidesEl.style.transform=`translateX(-${idx*100}%)`;for(let i=0;i<dots.length;i++){dots[i].classList.toggle('active', i===idx)} }
+    function go(i){idx=i;render();}
+    document.getElementById('prev').addEventListener('click',()=>{idx=(idx-1+slides.length)%slides.length;render()});
+    document.getElementById('next').addEventListener('click',()=>{idx=(idx+1)%slides.length;render()});
+    let auto = setInterval(()=>{idx=(idx+1)%slides.length;render()},4500);
+    // pause on hover
+    slidesEl.addEventListener('mouseenter',()=>clearInterval(auto)); slidesEl.addEventListener('mouseleave',()=>auto=setInterval(()=>{idx=(idx+1)%slides.length;render()},4500));
+    render();
+
+    // Modals
+    function openModal(id){document.getElementById(id).classList.add('show');document.getElementById(id).setAttribute('aria-hidden','false')}
+    function closeModal(el){el.classList.remove('show');el.setAttribute('aria-hidden','true')}
+    document.getElementById('open-it').addEventListener('click',()=>openModal('modal-it'));
+    document.getElementById('open-legal').addEventListener('click',()=>openModal('modal-legal'));
+    document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.closest('.modal'))));
+    document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m)}));
+
+    //flip card 
+ document.querySelectorAll(".flip-card").forEach(card=>{
+  card.addEventListener("click", ()=>{
+    card.classList.add("show-back");
+
+    // Auto revert after 5 seconds
+    setTimeout(()=>{
+      card.classList.remove("show-back");
+    }, 5000);
+  });
+});
+
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // smooth anchors for nav
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',(e)=>{e.preventDefault();const id=a.getAttribute('href').slice(1);const target=document.getElementById(id);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}))
+  // Hamburger toggle
+const hamburger = document.getElementById('hamburger');
+const navMobile = document.getElementById('nav-mobile');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMobile.style.display = navMobile.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close mobile menu on link click
+document.querySelectorAll('.nav-mobile a').forEach(link=>{
+  link.addEventListener('click',()=>{
+    navMobile.style.display='none';
+    hamburger.classList.remove('active');
+  })
+});
+// Toggle chat bubble
+const toggle = document.getElementById('whatsapp-toggle');
+const box = document.getElementById('whatsapp-box');
+toggle.addEventListener('click', () => {
+  box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+  box.style.flexDirection = 'column';
+});
+
+  </script>
+</body>
+</html>
